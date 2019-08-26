@@ -1,11 +1,6 @@
 const vscode = require('vscode');
-// const path = require('path');
-
-
-
 module.exports= class {
-
-
+    
     constructor() {
         this._onDidChangeTreeData = new vscode.EventEmitter();
     }
