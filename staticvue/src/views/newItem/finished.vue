@@ -5,14 +5,14 @@
       <p>
         <span class="finished-icon el-icon-circle-check"></span>完成
       </p>
-      <p>您可以</p>
+      <p>您可以 <span class="repeat-install" @click="repeatInstall">重新安装依赖</span></p>
       <div class="finished-ctt">
           <el-row :gutter="40">
             <el-col  :span="12" v-for="(item,index) in items" :key="index">
-                <div class="finished-inner-item">
+                <div class="finished-inner-item" @click="run(item)">
                     <p>{{item.title}}</p>
                     <span class="item-label">{{item.label}}</span>
-                    <span class="finished-doc el-icon-question"></span>
+                    <!-- <span class="finished-doc el-icon-question"></span> -->
             </div>
             </el-col>
           </el-row>
@@ -21,36 +21,41 @@
   </div>
 </template>
 <script>
+
 export default {
   data() {
     return {
       items: [
         {
-          title: "运行项目",
-          label: "运行项目,监听项目资源",
-          id: "runServer",
-          command: "npm run serve"
+          title: "启动",
+          label: "启动项目",
+          command: "npm run startup"
         },
         {
-          title: "打包项目",
-          label: "打包项目资源",
-          id: "command",
-          command: "npm run build"
+          title: "暂停",
+          label: "暂停项目",
+          command: "npm run shutdown"
         },
         {
-          title: "任务管理",
-          label: "执行启动、监听项目资源更新等监听任务",
-          id: "task",
-          doc: ""
-        },
-        {
-          title: "依赖管理",
-          id: "dependence",
-          label: "新增、删除、更新项目前端资源",
-          doc: ""
+          title: "查看",
+          label: "查看启动服务列表",
+          command: "npm run list"
         }
       ]
     };
+  },
+  methods:{
+    run(item){
+      this.$axios.post('/new/command',{command:item.command},()=>{
+            
+      })
+    },
+    repeatInstall(){
+         this.$axios.post('/new/command',{command:'npm install'},()=>{
+
+          })
+
+    }
   }
 };
 </script>
@@ -58,6 +63,12 @@ export default {
 .finished-ctn {
     .finished-ctt{
         margin-top:30px;
+    }
+    .repeat-install{
+      color:red;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 13px;
     }
   > p {
     line-height: 30px;

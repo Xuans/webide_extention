@@ -1,4 +1,7 @@
 const vscode = require('vscode');
+const path=require('path');
+const util=require('../util/util')
+const fs=require('fs');
 module.exports = class {
 
     constructor(port) {
@@ -25,7 +28,7 @@ module.exports = class {
             let openedWebviewPanels = this.openedWebviewPanels;
             // 打开开发者工具，会把所有webview的都打开
 
-            let panel = vscode.window.createWebviewPanel('aweb-preview', fielName, vscode.ViewColumn.One, {
+            let panel = vscode.window.createWebviewPanel('webide.preview', fielName, vscode.ViewColumn.One, {
                 enableScripts: true,
                 retainContextWhenHidden: true,// 切出不销毁
                 localResourceRoots: []
@@ -35,8 +38,21 @@ module.exports = class {
             switch (name) {
 
                 case 'new':
-                    loactionHref = `http://127.0.0.1:${port}/#/new`;
+                   
+                    let projectPath = vscode.workspace.rootPath;
+                    let packageJsonPath = path.join(projectPath, './package.json');
+                    if(fs.existsSync(packageJsonPath)){
+                        let packageJsonData = await util.readFile(packageJsonPath);
+                        packageJsonData = JSON.parse(packageJsonData.toString());
+                        if(!packageJsonData.__proStatus) loactionHref = `http://127.0.0.1:${port}/#/new`;
+                        if(packageJsonData.__proStatus==='uninstall') loactionHref = `http://127.0.0.1:${port}/#/new/install`;
+                        if(packageJsonData.__proStatus==='installed') loactionHref = `http://127.0.0.1:${port}/#/new/finished`;
+    
+                    }else{
+                        loactionHref = `http://127.0.0.1:${port}/#/new`
+                    }
 
+                
                     break;
                 case 'dependency':
                     loactionHref = `http://127.0.0.1:${port}/#/dependency`;

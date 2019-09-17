@@ -4,6 +4,9 @@ import App from './App.vue'
 import ElementUI from 'element-ui'
 import './theme/index.css';
 import router from './router';
+import axios from 'axios';
+
+Vue.prototype.$axios=axios;
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);

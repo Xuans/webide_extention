@@ -19,7 +19,7 @@ module.exports= class {
             label: '新建项目',
             collapsibleState: 0,
             command: {
-                command: 'extension.newProject',
+                command: 'extension.webide.openPanel',
                 title: '新建项目',
                 arguments: ['new','新建项目']
             }
@@ -27,7 +27,7 @@ module.exports= class {
             label: '依赖管理',
             collapsibleState: 0,
             command: {
-                command: 'extension.dependency',
+                command: 'extension.webide.openPanel',
                 title: '依赖管理',
                 arguments: ['dependency','依赖管理']
             }

@@ -26,13 +26,13 @@ export default {
                 label:'新一代云化和可视化开发工具',
                 id:'webIDE'
             },
-            {
-                img:require('../../assets/vue.png'),
-                title:'AWEB Vue SPA',
-                label:'基于 Vue Cli 3 和 Element UI 的单页应用框架',
-                id:'awebVue'
+            // {
+            //     img:require('../../assets/vue.png'),
+            //     title:'AWEB Vue SPA',
+            //     label:'基于 Vue Cli 3 和 Element UI 的单页应用框架',
+            //     id:'awebVue'
             
-            }
+            // }
             ]
         }
     }
