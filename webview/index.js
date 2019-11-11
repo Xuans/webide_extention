@@ -44,8 +44,9 @@ module.exports = class {
                     if(fs.existsSync(packageJsonPath)){
                         let packageJsonData = await util.readFile(packageJsonPath);
                         packageJsonData = JSON.parse(packageJsonData.toString());
+                       
                         if(!packageJsonData.__proStatus) loactionHref = `http://127.0.0.1:${port}/#/new`;
-                        if(packageJsonData.__proStatus==='uninstall') loactionHref = `http://127.0.0.1:${port}/#/new/install`;
+                        if(packageJsonData.__proStatus==='init') loactionHref = `http://127.0.0.1:${port}/#/new/install`;
                         if(packageJsonData.__proStatus==='installed') loactionHref = `http://127.0.0.1:${port}/#/new/finished`;
     
                     }else{

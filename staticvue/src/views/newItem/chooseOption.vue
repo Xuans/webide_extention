@@ -48,14 +48,14 @@ export default {
     return {
       webIDEModel: [],
       webIDEOption: [
-        {
-          lable: "面向管理端项目编辑器", // 1. V2sual，面向管理端项目编辑器
-          name: "v2sual"
-        },
-        {
-          lable: " 面向广告投放，可视化大屏项目编辑器",
-          name: "Ad"
-        }
+        // {
+        //   lable: "面向管理端项目编辑器", // 1. V2sual，面向管理端项目编辑器
+        //   name: "v2sual"
+        // },
+        // {
+        //   lable: " 面向广告投放，可视化大屏项目编辑器",
+        //   name: "Ad"
+        // }
       ],
       webVueModel: {
         layout: "manager",

@@ -8,10 +8,10 @@ const ConfigProvider = require('./provider/config');
 const Webview = require('./webview');
 const path = require('path')
 const newProject = require('./router/newProject');
-const socketIo=require('socket.io');
-const util=require('./util/util');
-const exec=require('child_process').exec;
-const constant=require('./config/const')
+// const socketIo = require('socket.io');
+// const util = require('./util/util');
+// const spawn = require('child_process').spawn;
+// const constant = require('./config/const')
 /**
  * @param {vscode.ExtensionContext} context
  */
@@ -26,58 +26,97 @@ function activate(context) {
 		.use(newProject.allowedMethods());
 
 	let server = http.createServer(app.callback());
-	let port=7350;
+	let port = 0;
 
-	const io = socketIo(server);
-	
+	// const io = socketIo(server);
 
-	io.on('connection', (socket)=> { 
-		let address = socket.handshake.address;
-		console.log('New client: ' + address);
-		
-		socket.on('/new/install',async()=>{
-			let location=vscode.workspace.rootPath;
 
-			let packageJsonPath=path.join(location,'./package.json');
-			let packageJsonData=await util.readFile(packageJsonPath);
-			packageJsonData=JSON.parse(packageJsonData.toString());
+	// io.on('connection', (socket) => {
+	// 	let address = socket.handshake.address;
+	// 	console.log('New client: ' + address);
 
-			let installProecess= exec(`npm install --${constant.NPMRC}`, { encoding: "utf8", cwd: location },async (error, stdout, stderr)=>{
-				if(error){
-					console.log(error);
-					socket.emit('/client/uninstall',error);
-				}else{
-			
-					packageJsonData.__proStatus='installed';
-					socket.emit('/client/installed');
-				}
-				await util.writeFile(packageJsonPath,JSON.stringify(packageJsonData,null,8))
-				
-				
-			})
-			installProecess.stderr.on('data', data => {
-			
-				console.log(data)
-				socket.emit('/client/installing',data);
-			});
+	// 	socket.on('/new/install', async () => {
+	// 		let location = vscode.workspace.rootPath;
 
-			installProecess.stdout.on('data', data => {
-				console.log(data)
-				socket.emit('/client/installing',data);
-			});
-		})
-	
-		
-	
-		
+	// 		let packageJsonPath = path.join(location, './package.json');
+	// 		let packageJsonData = await util.readFile(packageJsonPath);
+	// 		packageJsonData = JSON.parse(packageJsonData.toString());
 
-		
-	})//监听客户端链接
+	// 		let proc = spawn(process.platform === "win32" ? "npm.cmd" : "npm", ['install', `--${constant.NPMRC}`], { cwd: location })
+	// 		proc.stdout.setEncoding('utf8');
+
+	// 		proc.stdout.on('data', logs => {
+	// 			socket.emit('/client/installing', logs);
+
+	// 		});
+	// 		proc.stderr.setEncoding('utf8');
+	// 		proc.stderr.on('data', logs => {
+	// 			socket.emit('/client/installing', logs);
+
+
+	// 		});
+	// 		proc.on('error', (error) => {
+	// 			socket.emit('/client/uninstall', error);
+
+	// 		})
+
+	// 		proc.on('exit', async (code) => {
+
+	// 			if (code === 0) {
+
+	// 				packageJsonData.__proStatus = 'installed';
+	// 				socket.emit('/client/installed');
+	// 			} else {
+	// 				socket.emit('/client/uninstall', '错误:子进程退出，退出码为' + code);
+
+	// 			}
+	// 			await util.writeFile(packageJsonPath, JSON.stringify(packageJsonData, null, 8))
+
+
+	// 		});
+
+
+	// 		process.on('exit', () => {
+	// 			proc.kill();
+	// 		});
+
+
+	// 		// let installProecess= exec(`npm install --${constant.NPMRC}`, { encoding: "utf8", cwd: location },async (error, stdout, stderr)=>{
+	// 		// 	if(error){
+	// 		// 		console.log(error);
+	// 		// 		socket.emit('/client/uninstall',error);
+	// 		// 	}else{
+
+	// 		// 		packageJsonData.__proStatus='installed';
+	// 		// 		socket.emit('/client/installed');
+	// 		// 	}
+	// 		// 	await util.writeFile(packageJsonPath,JSON.stringify(packageJsonData,null,8))
+
+
+	// 		// })
+	// 		// installProecess.stderr.on('data', data => {
+
+	// 		// 	console.log(data)
+	// 		// 	socket.emit('/client/installing',data);
+	// 		// });
+
+	// 		// installProecess.stdout.on('data', data => {
+	// 		// 	console.log(data)
+	// 		// 	socket.emit('/client/installing',data);
+	// 		// });
+	// 	})
+
+
+
+
+
+
+	// })//监听客户端链接
 
 
 	server.listen(port, () => {
-		if(port===0){
-		  port = parseInt(server.address().port.toString());
+		if (port === 0) {
+			port = parseInt(server.address().port.toString());
 		}
 		let configProvider = new ConfigProvider();
 		let webview = new Webview(port);

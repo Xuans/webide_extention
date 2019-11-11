@@ -9,21 +9,24 @@
       <span class="progress-text"></span>
     </div>-->
     <div class="project-progress-ctn">
-      <el-steps :space="300" :active="1">
+      <el-steps :space="300" :active="1" align-center>
         <el-step title="下载初始应用" :icon="initStatusCls"></el-step>
         <el-step title="安装初始应用" :icon="installStatusCls"></el-step>
       </el-steps>
     </div>
 
+    <!-- <div class="install-tip" v-if="initStatus===3">
+      正在终端安装，若已经
+      <em @click="goFinished">点击</em>
+    </div>-->
     <!-- <div>
       <span :class="['install-init-icon',initStatusCls]"></span> 下载初始应用
     </div>-->
 
-    <template>
+    <!-- <template>
       <div>
-        <!-- <span :class="['install-init-icon',installStatusCls]"></span> 安装初始应用 -->
         <div class="install-tip" v-if="initStatus===3">
-          <span @click="repeatInstall" v-if="installStatus===2">点击重新安装依赖</span> 注意：如已自行安装,
+          <span @click="repeatInstall" v-if="installStatus===2">点击重新安装依赖</span> 提示:vscode终端安装速度快,
           <em @click="goFinished">请点击</em>
         </div>
         
@@ -31,15 +34,13 @@
           {{content}}
           </div>
       </div>
-    </template>
+    </template>-->
   </div>
 </template>
      
 
    
-    
-  </div>
-</template>
+
 <script>
 import io from "socket.io-client";
 const socket = io();
@@ -104,27 +105,31 @@ export default {
   },
   mounted() {
     let { workbench } = this.$route.params;
-    socket.on("/client/installing", content => {
-      this.content = `${this.content} ${content}`;
-    });
+    let self = this;
+    // socket.on("/client/installing", content => {
+    //   this.content = `${this.content} ${content}`;
+    // });
 
-    socket.on("/client/installed", content => {
-      // this.process = 100;
-      this.installStatus = 3;
-      this.$router.push({ name: "Finished" });
-    });
+    // socket.on("/client/installed", content => {
+    //   // this.process = 100;
+    //   this.installStatus = 3;
+    //   this.$router.push({ name: "Finished" });
+    // });
 
-    //安装失败
-    socket.on("/client/uninstall", content => {
-      this.installStatus = 2;
-    });
+    // //安装失败
+    // socket.on("/client/uninstall", content => {
+    //   this.installStatus = 2;
+    // });
 
     this.$axios.post("/new/init", { workbench: workbench }).then(res => {
       if (res.data && res.status === 200 && res.data.status) {
         // this.process = 50;
         this.initStatus = 3;
         this.installStatus = 1;
-        socket.emit("/new/install");
+        setTimeout(() => {
+          self.install();
+        }, 900);
+        // socket.emit("/new/install");
       } else {
         this.initStatus = 2;
         this.$notify({
@@ -136,24 +141,32 @@ export default {
     });
   },
   methods: {
-    repeatInstall() {
-      this.content = "";
-      this.installStatus = 1;
-      socket.emit("/new/install");
-    },
-    goFinished() {
-      this.$axios.post("/new/changeFinished").then(res => {
-        if (res.data && res.status === 200 && res.data.status) {
-          this.$router.push({ name: "Finished" });
-        } else {
-          this.$notify({
-            title: "失败",
-            message: res.data.errorMsg,
-            type: "error"
-          });
-        }
-      });
+    install() {
+      let self = this;
+      this.$axios
+        .post("/new/command", { command: `npm install '&&' npm run build` })
+        .then(res => {
+          self.$router.push({ name: "Finished" });
+        });
     }
+    // repeatInstall() {
+    //   this.content = "";
+    //   this.installStatus = 1;
+    //   socket.emit("/new/install");
+    // },
+    // goFinished() {
+    //   this.$axios.post("/new/changeFinished").then(res => {
+    //     if (res.data && res.status === 200 && res.data.status) {
+    //       this.install();
+    //     } else {
+    //       this.$notify({
+    //         title: "失败",
+    //         message: res.data.errorMsg,
+    //         type: "error"
+    //       });
+    //     }
+    //   });
+    // }
   }
 };
 </script>
@@ -189,7 +202,7 @@ export default {
 }
 .project-progress-ctn {
   width: 100%;
-  margin-top: 10px;
+  margin-top: 30px;
   > p {
     line-height: 30px;
   }

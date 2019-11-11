@@ -2,7 +2,7 @@
     "name": "AgreeWebIDE",
     "displayName": "AgreeWebIDE",
     "description": "extention for agree",
-    "version": "0.0.8",
+    "version": "0.0.13",
     "publisher": "agree",
     "engines": {
         "vscode": "^1.28.2"
@@ -19,7 +19,7 @@
         "commands": [
             {
                 "command": "extension.webide.openDevTool",
-                "title": "打开调试工具"
+                "title": "打开WEBIDE调试工具"
             }
         ],
         "viewsContainers": {
